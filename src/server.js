@@ -4,7 +4,7 @@ const { readFileSync } = require('fs');
 const { resolve } = require('path');
 const { WebSocketServer, OPEN } = require('ws');
 
-const { Ffmpeg } = require('./ffmpeg');
+const Ffmpeg = require('./ffmpeg');
 
 const app = express();
 
@@ -31,7 +31,7 @@ const wss = new WebSocketServer({ server: wsServer });
 
 wss.on('connection', socket => {
   console.log('new connection');
-  socket.process = new Fdmpeg();
+  socket.process = new Ffmpeg();
 
   socket.on('message', data => {
     try {

@@ -1,7 +1,7 @@
 const child_process = require('child_process');
 const { EventEmitter } = require('events');
 
-const recordFilesPath = './files';
+const recordFilePath = './files';
 
 module.exports = class Ffmpeg {
   constructor() {
@@ -17,7 +17,7 @@ module.exports = class Ffmpeg {
   }
 
   parseData(data) {
-    this._process.stdin.pipe(new Buffer(data));
+    this._process.stdin.pipe(Buffer.from(JSON.stringify(data)));
   }
 
   kill() {
@@ -44,7 +44,7 @@ module.exports = class Ffmpeg {
       `${recordFilePath}/${date.getTime()}.webm`
     ]);
 
-    return commandArgs();
+    return commandArgs;
   }
 
   get _videoArgs() {

@@ -17,11 +17,12 @@ socket.onerror = error => {
 
 socket.onclose = () => {
   console.log('socket::onclose');
+  stop();
 };
 
 const sendSocketMessage = (action, data) => {
   const message = { action, data };
-  socket.send(JSON.stringify(message);
+  socket.send(JSON.stringify(message));
 };
 
 const start = async () => {
@@ -39,8 +40,9 @@ const start = async () => {
     videoBitsPerSecond: 2500000
   };
 
-  const mediaStream = await navigator.getUserMedia({ video: { width: 640, height: 480 }, audio: true });
+  const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: true });
 
+  video.srcObject = mediaStream;
   mediaRecorder = new MediaRecorder(mediaStream, options);
 
   setListeners();
