@@ -22,7 +22,8 @@ socket.onclose = () => {
 
 const sendSocketMessage = (action, data) => {
   const message = { action, data };
-  socket.send(JSON.stringify(message));
+  console.log('message', message);
+  socket.send(data);
 };
 
 const start = async () => {
@@ -73,7 +74,7 @@ const handleOnStop = () => {
   socket.close();
 };
 
-const handleOnDataAvailable = ({ data }) => {
+const handleOnDataAvailable = async ({ data }) => {
   if (data.size > 0) {
     sendSocketMessage('chunk', data);
   }

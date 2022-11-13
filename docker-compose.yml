@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  recorder:
+    build: .
+    init: true
+    network_mode: 'host'
+    restart: 'always'
+    volumes:
+      - ./files:/usr/src/recorder/files
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '1m'
+        max-file: '10'

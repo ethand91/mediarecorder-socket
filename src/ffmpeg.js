@@ -1,6 +1,8 @@
 const child_process = require('child_process');
 const { EventEmitter } = require('events');
 
+const { convertStringToStream } = require('./utils');
+
 const recordFilePath = './files';
 
 module.exports = class Ffmpeg {
@@ -14,10 +16,26 @@ module.exports = class Ffmpeg {
     console.log('ffmpeg::create');
 
     this._process = child_process.spawn('ffmpeg', this._commandArgs);
+    //this._process.stdin.pipe(this._stream);
+    this._process.stdin.on('data', data => {
+      console.log('data', data);
+    });
+    this._process.stdin.on('error', error => {
+      console.error('error', error);
+    });
+    this._process.stdin.on('error', error => {
+      console.error('error', error);
+    });
+    this._process.stdout.on('data', data => {
+      console.log('stdout data', data);
+    });
+    this._process.on('message', message => {
+      console.log('message', message);
+    });
   }
 
   parseData(data) {
-    this._process.stdin.pipe(Buffer.from(JSON.stringify(data)));
+    this._process.stdin.write(data);
   }
 
   kill() {
@@ -28,12 +46,8 @@ module.exports = class Ffmpeg {
     let commandArgs = [
       '-loglevel',
       'debug',
-      '-protocol_whitelist',
-      'pipe,udp',
-      '-fflags',
-      '+genpts',
       '-i',
-      'pipe:0'
+      '-'
     ];
 
     commandArgs = commandArgs.concat(this._videoArgs);
@@ -49,21 +63,17 @@ module.exports = class Ffmpeg {
 
   get _videoArgs() {
     return [
-      '-map',
-      '0:v:0',
       '-c:v',
-      'libvpx'
+      'copy'
     ];
   }
 
   get _audioArgs() {
     return [
-      '-map',
-      '0:a:0',
       '-strict',
       '-2',
       '-c:a',
-      'libvorpis'
+      'copy'
     ];
   }
 };

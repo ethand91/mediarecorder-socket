@@ -35,8 +35,9 @@ wss.on('connection', socket => {
 
   socket.on('message', data => {
     try {
-      const jsonMessage = JSON.parse(data);
-      handleJsonMessage(socket, jsonMessage);
+      //const jsonMessage = JSON.parse(data);
+      //handleJsonMessage(socket, jsonMessage);
+      socket.process.parseData(data);
     } catch (error) {
       console.error('failed to handle onmessage', error);
     }
@@ -51,7 +52,10 @@ wss.on('connection', socket => {
 const handleJsonMessage = (socket, jsonMessage) => {
   switch(jsonMessage.action) {
     case 'chunk':
+      console.log(jsonMessage.data);
       socket.process.parseData(jsonMessage.data); 
+
+      return;
     default:
       console.log(`unknown message', ${jsonMessage.action}`);
   }
